@@ -1,0 +1,4 @@
+- minifier
+- allow third party runtimes
+- allow async loading
+- build a connect middleware for dev purposes

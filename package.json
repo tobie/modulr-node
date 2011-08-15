@@ -1,0 +1,37 @@
+{ 
+  "name": "modulr",
+  "description": "Resolves and concatenates CommonJS module dependencies for use in the browser.",
+  "main": "./main",
+  "version": "0.1.0",
+  "dependencies": {
+    "module-grapher" : ">=0.4.0"
+  },
+  "maintainers": [
+    {
+      "name": "Tobie Langel",
+      "email": "tobie.langel@gmail.com",
+      "web": "http://tobielangel.com"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Tobie Langel",
+      "email": "tobie.langel@gmail.com",
+      "web": "http://tobielangel.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/tobie/modulr-node.git"
+  },
+  "licenses": [
+    {
+      "type" : "MIT",
+      "url" : "http://github.com/tobie/modulr-node/raw/master/LICENSE"
+    },
+    {
+      "type" : "Apache-2.0",
+      "url" : "http://github.com/tobie/modulr-node/raw/master/LICENSE"
+    }
+  ]
+}
