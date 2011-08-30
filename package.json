@@ -2,9 +2,14 @@
   "name": "modulr",
   "description": "Resolves and concatenates CommonJS module dependencies for use in the browser.",
   "main": "./main",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {
     "module-grapher" : ">=0.4.0"
+  },
+  "author": {
+    "name": "Tobie Langel",
+    "email": "tobie.langel@gmail.com",
+    "web": "http://tobielangel.com"
   },
   "maintainers": [
     {
