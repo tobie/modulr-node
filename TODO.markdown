@@ -2,3 +2,4 @@
 - allow third party runtimes
 - allow async loading
 - build a connect middleware for dev purposes
+- allow passing relative module identifiers to the `lazyEval` option.
