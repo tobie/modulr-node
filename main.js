@@ -20,12 +20,12 @@ exports.buildFromPackage = function(p, callback) {
     if (err) {
       callback(err);
     } else {
-      var packageFile, root;
+      var packageFile, config = {};
       if (stat.isDirectory()) {
-        root = p;
-        packageFile = path.join(root, 'package.json');
+        config.root = p;
+        packageFile = path.join(p, 'package.json');
       } else {
-        root = path.rootname(p);
+        config.root = path.rootname(p);
         packageFile = p;
       }
       jsonFs.readFile(packageFile, function(err, json) {
@@ -37,7 +37,9 @@ exports.buildFromPackage = function(p, callback) {
             paths.push.apply(paths, json.builder_paths);
           }
           paths.push('.');
-          build(json.main, { paths: paths, root: root }, callback);
+          config.paths = paths;
+          config.lazyEval = json.builder_lazy_eval_modules;
+          build(json.main, config, callback);
         }
       });
     }
