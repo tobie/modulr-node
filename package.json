@@ -2,7 +2,7 @@
   "name": "modulr",
   "description": "Resolves and concatenates CommonJS module dependencies for use in the browser.",
   "main": "./main",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "dependencies": {
     "module-grapher" : ">=0.4.0"
   },
