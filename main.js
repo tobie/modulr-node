@@ -32,12 +32,8 @@ exports.buildFromPackage = function(p, callback) {
         if (err) {
           callback(err);
         } else {
-          var paths = [];
-          if (json.builder_paths) {
-            paths.push.apply(paths, json.builder_paths);
-          }
-          paths.push('.');
-          config.paths = paths;
+          config.paths = json.builder_paths ? json.builder_paths : [];
+          config.paths.push('.');
           config.lazyEval = json.builder_lazy_eval_modules;
           build(json.main, config, callback);
         }
