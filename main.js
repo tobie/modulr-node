@@ -11,7 +11,14 @@ function build(main, config, callback) {
     config = {};
   }
   moduleGrapher.graph(main, config, function(err, result) {
-    err ? callback(err) : builder.create(config).build(result, callback);
+    if (err) {
+      callback(err)
+    } else {
+      builder.create(config).build(result, function(err, output) {
+        log(result);
+        callback(err, output);
+      });
+    }
   });
 }
 
@@ -35,9 +42,34 @@ exports.buildFromPackage = function(p, callback) {
           config.paths = json.builder_paths ? json.builder_paths : [];
           config.paths.push('.');
           config.lazyEval = json.builder_lazy_eval_modules;
+          config.isPackageAware = true;
           build(json.main, config, callback);
         }
       });
     }
   });
+}
+
+function log(result) {
+  console.log('Successfully resolved dependencies for module "'+ result.main + '".');
+
+  var d = result.resolvedAt - result.instantiatedAt;
+  console.log('This took ' + d + ' ms.');
+
+  var modCountText = 'Found ' + result.getModuleCount() + ' module(s)';
+  if (result.getPackageCount) {
+    console.log(modCountText + ' and '+ result.getPackageCount() + ' package(s).');
+  } else {
+    console.log(modCountText + '.');
+  }
+
+  if (result.lazyEval) {
+    var modules = Object.keys(result.lazyEval).sort().join(', ');
+    console.log('The following modules will be lazy-evaled: ' + modules + '.');
+  }
+
+  var size = Math.round((result.getSize() / 1024) * 10) / 10;
+  console.log('The total size is ' + size + ' kb unminified.');
+
+  console.log('There are', result.getLoc(), 'LOC and', result.getSloc(), 'SLOC.');
 }
