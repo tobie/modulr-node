@@ -15,7 +15,9 @@ function build(main, config, callback) {
       callback(err)
     } else {
       builder.create(config).build(result, function(err, output) {
-        log(result);
+        if (config.verbose) {
+          log(result);
+        }
         callback(err, output);
       });
     }
@@ -43,6 +45,7 @@ exports.buildFromPackage = function(p, callback) {
           config.paths.push('.');
           config.lazyEval = json.builder_lazy_eval_modules;
           config.isPackageAware = true;
+          config.verbose = !!json.builder_verbose;
           build(json.main, config, callback);
         }
       });
