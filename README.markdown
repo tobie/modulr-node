@@ -22,7 +22,7 @@ require('modulr').build('foo', {
 }, callback);
 ```
 
-`modulr` can also accepts a [CommonJS package][5] or its `package.json` file as argument. I which case it uses the JSON file's `main` value as entry point, the custom `builder_path` property to set search paths, and the package's dir as root.
+`modulr` can also accepts a [CommonJS package][6] or its `package.json` file as argument. I which case it uses the JSON file's `main` value as entry point, the custom `builder_path` property to set search paths, and the package's dir as root.
 
 ```javascript
 require('modulr').buildFromPackage('path/to/package', callback);
@@ -31,7 +31,7 @@ require('modulr').buildFromPackage('path/to/package', callback);
 License
 -------
 
-Your choice of [MIT or Apache, Version 2.0 licenses][6]. `module-grapher` is copyright 2010 [Tobie Langel][7].
+Your choice of [MIT or Apache, Version 2.0 licenses][7]. `module-grapher` is copyright 2010 [Tobie Langel][8].
 
 [1]: http://wiki.commonjs.org/wiki/Modules/1.1
 [2]: https://github.com/tobie/modulr
