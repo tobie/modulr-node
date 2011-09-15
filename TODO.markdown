@@ -2,4 +2,7 @@
 - allow third party runtimes
 - allow async loading
 - build a connect middleware for dev purposes
-- allow passing relative module identifiers to the `lazyEval` option.
+- optionally use md5 hashes for module identifiers.
+- instrument runtime (ids and number of calls define and require, load time, etc.)
+- localStorage-caching mode.
+- resolving identifiers at build time. 
