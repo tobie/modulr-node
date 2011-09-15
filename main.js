@@ -15,7 +15,9 @@ function build(main, config, callback) {
       callback(err)
     } else {
       builder.create(config).build(result, function(err, output) {
-        log(result);
+        if (config.verbose) {
+          log(result);
+        }
         callback(err, output);
       });
     }
@@ -36,13 +38,15 @@ exports.buildFromPackage = function(p, callback) {
         packageFile = p;
       }
       jsonFs.readFile(packageFile, function(err, json) {
+        var modulrConfig = json.modulr_config;
         if (err) {
           callback(err);
         } else {
-          config.paths = json.builder_paths ? json.builder_paths : [];
+          config.paths = modulrConfig.paths ? modulrConfig.paths : [];
           config.paths.push('.');
-          config.lazyEval = json.builder_lazy_eval_modules;
+          config.lazyEval = modulrConfig.lazy_eval;
           config.isPackageAware = true;
+          config.verbose = !!modulrConfig.verbose;
           build(json.main, config, callback);
         }
       });
