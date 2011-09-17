@@ -12,7 +12,7 @@
         key = PREFIX + id,
         mod = _modules[key];
     
-    if (mod) { return mod.exports };
+    if (mod) { return mod.exports; }
     
     _modules[key] = mod = {
       id: id,
