@@ -2,7 +2,6 @@
 (function(exports) {
   var _factories = {},
       _modules = {},
-      _handlers = [],
       _dirStack = [''],
       PREFIX = '__module__', // Poor man's hasOwnProperty
       RELATIVE_IDENTIFIER_PATTERN = /^\.\.?\//;
@@ -22,6 +21,7 @@
     _dirStack.push(id.substring(0, id.lastIndexOf('/') + 1))
     try {
       var fn = _factories[key];
+      delete _factories[key];
       if (!fn) { throw 'Can\'t find module "' + identifier + '".'; }
       
       // lazy eval
