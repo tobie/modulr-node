@@ -24,12 +24,17 @@ function build(main, config, callback) {
   });
 }
 
-exports.buildFromPackage = function(p, callback) {
+exports.buildFromPackage = function(p, config, callback) {
+  if (!callback) {
+    callback = config;
+    config = {};
+  }
+
   fs.stat(p, function(err, stat) {
     if (err) {
       callback(err);
     } else {
-      var packageFile, config = {};
+      var packageFile;
       if (stat.isDirectory()) {
         config.root = p;
         packageFile = path.join(p, 'package.json');
@@ -38,15 +43,28 @@ exports.buildFromPackage = function(p, callback) {
         packageFile = p;
       }
       jsonFs.readFile(packageFile, function(err, json) {
-        var modulrConfig = json.modulr_config;
+        // get package-specific config options
+        var modulrConfig = json.modulr || {};
         if (err) {
           callback(err);
         } else {
-          config.paths = modulrConfig.paths ? modulrConfig.paths : [];
+          var paths = modulrConfig.paths ? modulrConfig.paths : [];
+          // we may want to include additional paths that are dynamic at build time
+          if (config.paths) {
+            config.paths = config.paths.concat(paths);
+          } else {
+            config.paths = paths;
+          }
           config.paths.push('.');
-          config.lazyEval = modulrConfig.lazy_eval;
+
+          if (config.lazyEval === undefined) {
+            config.lazyEval = !!modulrConfig.lazy_eval;
+          }
           config.isPackageAware = true;
-          config.verbose = !!modulrConfig.verbose;
+          if (config.verbose === undefined)  {
+            config.verbose = !!modulrConfig.verbose;
+          }
+
           build(json.main, config, callback);
         }
       });
