@@ -22,7 +22,7 @@ require('modulr').build('foo', {
 }, callback);
 ```
 
-`modulr` can also accepts a [CommonJS package][6] or its `package.json` file as argument. I which case it uses the JSON file's `main` value as entry point, the custom `builder_path` property to set search paths, and the package's dir as root.
+`modulr` can also accepts a [CommonJS package][6] or its `package.json` file as argument. I which case it uses the JSON file's `main` value as entry point, the package's dir as root, and picks the rest of its options from the JSON file's `modulr` namespace.
 
 ```javascript
 require('modulr').buildFromPackage('path/to/package', callback);

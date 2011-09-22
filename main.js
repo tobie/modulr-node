@@ -14,39 +14,42 @@ function build(main, config, callback) {
     if (err) {
       callback(err)
     } else {
-      builder.create(config).build(result, function(err, output) {
+      builder.create(config).build(result, function(err, result) {
         if (config.verbose) {
           log(result);
         }
-        callback(err, output);
+        callback(err, result);
       });
     }
   });
 }
 
-exports.buildFromPackage = function(p, callback) {
+exports.buildFromPackage = function(p, configCallback, callback) {
+  if (!callback) {
+    callback = configCallback;
+    configCallback = function() {};
+  }
   fs.stat(p, function(err, stat) {
     if (err) {
       callback(err);
     } else {
-      var packageFile, config = {};
+      var packageFile, root;
       if (stat.isDirectory()) {
-        config.root = p;
+        root = p;
         packageFile = path.join(p, 'package.json');
       } else {
-        config.root = path.rootname(p);
+        root = path.dirname(p);
         packageFile = p;
       }
       jsonFs.readFile(packageFile, function(err, json) {
-        var modulrConfig = json.modulr_config;
         if (err) {
           callback(err);
         } else {
-          config.paths = modulrConfig.paths ? modulrConfig.paths : [];
+          var config = json.modulr || {};
+          config.paths = config.paths || [];
           config.paths.push('.');
-          config.lazyEval = modulrConfig.lazy_eval;
           config.isPackageAware = true;
-          config.verbose = !!modulrConfig.verbose;
+          configCallback(config);
           build(json.main, config, callback);
         }
       });
