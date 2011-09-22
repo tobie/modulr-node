@@ -31,7 +31,7 @@ require('modulr').buildFromPackage('path/to/package', callback);
 License
 -------
 
-Your choice of [MIT or Apache, Version 2.0 licenses][7]. `module-grapher` is copyright 2010 [Tobie Langel][8].
+Your choice of [MIT or Apache, Version 2.0 licenses][7]. `modulr` is copyright 2010 [Tobie Langel][8].
 
 [1]: http://wiki.commonjs.org/wiki/Modules/1.1
 [2]: https://github.com/tobie/modulr
