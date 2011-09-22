@@ -49,6 +49,7 @@ exports.buildFromPackage = function(p, configCallback, callback) {
           config.paths = config.paths || [];
           config.paths.push('.');
           config.isPackageAware = true;
+          config.root = root;
           configCallback(config);
           build(json.main, config, callback);
         }
