@@ -2,54 +2,56 @@
 (function(exports) {
   var _factories = {},
       _modules = {},
-      _dirStack = [''],
       PREFIX = '__module__', // Poor man's hasOwnProperty
       RELATIVE_IDENTIFIER_PATTERN = /^\.\.?\//;
-  
-  function require(identifier) {
-    var id = resolveIdentifier(identifier),
-        key = PREFIX + id,
-        mod = _modules[key];
-    
-    if (mod) { return mod.exports; }
-    
-    _modules[key] = mod = {
-      id: id,
-      exports: {}
-    };
-    
-    _dirStack.push(id.substring(0, id.lastIndexOf('/') + 1))
-    try {
-      var fn = _factories[key];
-      delete _factories[key];
-      if (!fn) { throw 'Can\'t find module "' + identifier + '".'; }
       
-      // lazy eval
-      if (typeof fn === 'string') {
-        fn = new Function('require', 'exports', 'module', fn);
-      }
-      // require.main isn't defined until we actually require the program's
-      // entry point.
-      if (!require.main) { require.main = mod; }
-      fn(require, mod.exports, mod);
-      _dirStack.pop();
-    } catch(e) {
-      _dirStack.pop();
-      // We'd use a finally statement here if it wasn't for IE.
-      throw e;
-    }
+  function makeRequire(id, main) {
+    // Find the requirer's dirname from it's id.
+    var path = id.substring(0, id.lastIndexOf('/') + 1);
     
-    return mod.exports;
+    function require(identifier) {
+      var id = resolveIdentifier(identifier, path),
+          key = PREFIX + id,
+          mod = _modules[key];
+
+      // Check if this module's factory has already been called.
+      if (!mod) {
+        _modules[key] = mod = { id: id, exports: {} };
+
+        var fn = _factories[key];
+        delete _factories[key]; // no longer needed.
+
+        if (!fn) { throw 'Can\'t find module "' + identifier + '".'; }
+
+        // lazy eval
+        if (typeof fn === 'string') {
+          fn = new Function('require', 'exports', 'module', fn);
+        }
+
+        // Create an instance of `require` per module. Each instance has a
+        // reference to the path it was called from to be able to properly
+        // resolve relative identifiers.
+        // `main` isn't defined until we actually require the program's
+        // entry point.
+        var r = makeRequire(id, main || mod);
+        fn(r, mod.exports, mod);
+      }
+      return mod.exports;
+    }
+
+    require.main = main;
+    return require;
   }
-  
-  function resolveIdentifier(identifier) {
-    var dir, parts, part, path;
+
+  function resolveIdentifier(identifier, dir) {
+    var parts, part, path;
     
     if (!RELATIVE_IDENTIFIER_PATTERN.test(identifier)) {
       return identifier;
     }
-    dir = _dirStack[_dirStack.length - 1];
+
     parts = (dir + identifier).split('/');
+
     path = [];
     for (var i = 0, length = parts.length; i < length; i++) {
       part = parts[i];
@@ -72,5 +74,5 @@
   }
   
   exports.define = define;
-  exports.require = require;
+  exports.require = makeRequire('');
 })(this);
