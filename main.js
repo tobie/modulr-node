@@ -47,7 +47,9 @@ exports.buildFromPackage = function(p, configCallback, callback) {
         } else {
           var config = json.modulr || {};
           config.paths = config.paths || [];
-          config.paths.push('.');
+          if (config.paths.indexOf('.') < 0) {
+            config.paths.push('.');
+          }
           config.isPackageAware = true;
           config.root = root;
           configCallback(config);
