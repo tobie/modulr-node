@@ -1,43 +1,35 @@
-{ 
+{
   "name": "modulr",
   "description": "Resolves and concatenates CommonJS module dependencies for use in the browser.",
   "main": "./main",
-  "version": "0.4.5",
+  "version": "0.5.0",
   "dependencies": {
-    "module-grapher" : "0.6.x",
+    "module-grapher": "0.6.x",
     "uglify-js": "~1.0.7"
   },
-  "author": {
-    "name": "Tobie Langel",
-    "email": "tobie.langel@gmail.com",
-    "web": "http://tobielangel.com"
-  },
+  "author": "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)",
   "maintainers": [
-    {
-      "name": "Tobie Langel",
-      "email": "tobie.langel@gmail.com",
-      "web": "http://tobielangel.com"
-    }
+    "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)"
   ],
   "contributors": [
-    {
-      "name": "Tobie Langel",
-      "email": "tobie.langel@gmail.com",
-      "web": "http://tobielangel.com"
-    }
+    "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/tobie/modulr-node.git"
+    "url": "git://github.com/tobie/modulr-node.git"
   },
   "licenses": [
     {
-      "type" : "MIT",
-      "url" : "http://github.com/tobie/modulr-node/raw/master/LICENSE"
+      "type": "MIT",
+      "url": "http://github.com/tobie/modulr-node/raw/master/LICENSE"
     },
     {
-      "type" : "Apache-2.0",
-      "url" : "http://github.com/tobie/modulr-node/raw/master/LICENSE"
+      "type": "Apache-2.0",
+      "url": "http://github.com/tobie/modulr-node/raw/master/LICENSE"
     }
-  ]
+  ],
+  "devDependencies": {},
+  "engines": {
+    "node": "*"
+  }
 }
