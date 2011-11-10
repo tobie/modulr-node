@@ -16,7 +16,6 @@
 
       // Check if this module's factory has already been called.
       if (!mod) {
-        _modules[key] = mod = { id: id, exports: {} };
 
         var fn = _factories[key];
         delete _factories[key]; // no longer needed.
@@ -28,6 +27,7 @@
           fn = new Function('require', 'exports', 'module', fn);
         }
 
+        _modules[key] = mod = { id: id, exports: {} };
         // Create an instance of `require` per module. Each instance has a
         // reference to the path it was called from to be able to properly
         // resolve relative identifiers.
