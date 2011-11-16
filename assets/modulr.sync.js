@@ -60,7 +60,11 @@
         case '.':
           continue;
         case '..':
-          path.pop();
+          if (path.length) {
+            path.pop();
+          } else {
+            throw new RangeError('Out of bounds identifier: ' + identifier);
+          }
           break;
         default:
           path.push(part);
