@@ -14,12 +14,9 @@ function build(main, config, callback) {
     if (err) {
       callback(err)
     } else {
-      builder.create(config).build(result, function(err, result) {
-        if (config.verbose) {
-          log(result);
-        }
-        callback(err, result);
-      });
+      result.output = builder.create(config).build(result);
+      if (config.verbose) { log(result); }
+      callback(null, result);
     }
   });
 }
