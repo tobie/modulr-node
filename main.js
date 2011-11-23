@@ -46,10 +46,6 @@ exports.buildFromPackage = function(p, configCallback, callback) {
           callback(err);
         } else {
           var config = json.modulr || {};
-          config.paths = config.paths || [];
-          if (config.paths.indexOf('.') < 0) {
-            config.paths.push('.');
-          }
           config.isPackageAware = true;
           config.root = root;
           configCallback(config);
