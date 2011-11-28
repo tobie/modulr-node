@@ -2,6 +2,7 @@
 (function(exports) {
   var _factories = {},
       _modules = {},
+      _requireStack = [],
       PREFIX = '__module__', // Poor man's hasOwnProperty
       RELATIVE_IDENTIFIER_PATTERN = /^\.\.?\//;
       
@@ -12,7 +13,30 @@
     function require(identifier) {
       var id = resolveIdentifier(identifier, path),
           key = PREFIX + id,
-          mod = _modules[key];
+          mod = _modules[key],
+          _requireStackIndex = -1;
+
+      if ('indexOf' in _requireStack) {
+        _requireStackIndex = _requireStack.indexOf(id);
+      } else {
+        // No indexOf support for Array
+        for (var i = 0; i < _requireStack.length; i++) {
+          if (_requireStack[i] === id) {
+            _requireStackIndex = i;
+            break;
+          }
+        }
+      }
+      if (_requireStackIndex !== -1) {
+        var msg = 'Circular Require: ';
+        var requireOrder = [];
+        for (var i = _requireStackIndex; i < _requireStack.length; i++) {
+          requireOrder.push(_requireStack[i]);
+        }
+        requireOrder.push(id);
+        window.console && console.error(msg + requireOrder.join(' -> '));
+      }
+      _requireStack.push(id);
 
       // Check if this module's factory has already been called.
       if (!mod) {
@@ -36,6 +60,8 @@
         var r = makeRequire(id, main || mod);
         fn(r, mod.exports, mod);
       }
+
+      _requireStack.pop();
       return mod.exports;
     }
 
