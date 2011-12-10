@@ -28,6 +28,14 @@ require('modulr').build('foo', {
 require('modulr').buildFromPackage('path/to/package', callback);
 ```
 
+Tests
+-----
+
+Tests are run using [nodeunit][9]. Once nodeunit is installed, from the root 
+directory, run
+
+    $ nodeunit test
+
 License
 -------
 
@@ -41,4 +49,4 @@ Your choice of [MIT or Apache, Version 2.0 licenses][7]. `modulr` is copyright 2
 [6]: http://wiki.commonjs.org/wiki/Packages/1.1
 [7]: https://raw.github.com/tobie/modulr-node/master/LICENSE
 [8]: http://tobielangel.com
-
+[9]: https://github.com/caolan/nodeunit

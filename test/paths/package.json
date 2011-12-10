@@ -1,0 +1,11 @@
+{
+  "name": "paths",
+  "version": "0.0.0",
+  "main": "paths",
+  "modulr": {
+    "paths": [
+      "./lib",
+      "./lib2"
+    ]
+  }
+}
