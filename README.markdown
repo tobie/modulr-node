@@ -19,10 +19,24 @@ Usage
 require('modulr').build('foo', {
   paths: ['./lib', './vendor'], // defaults to the equivalent of ['.']
   root: 'path/to/package/root/' // defaults to process.cwd()
-}, callback);
-```
+}, buildCallback);
 
-`modulr` can also accepts a [CommonJS package][6] or its `package.json` file as argument. I which case it uses the JSON file's `main` value as entry point, the package's dir as root, and picks the rest of its options from the JSON file's `modulr` namespace.
+// Suitable callback for modulr build that writes the build
+// result to an output file `monolithicBuild.js`
+function buildCallback (err, result) {
+  if(err) {
+    throw err;
+  } else {
+    require('fs').writeFileSync(
+        '/path/to/monolithicBuild.js',
+        result.output, 'utf8');
+  }
+}
+```
+The first parameter of the callback will be set to any errors that occured, and the second parameter will be set to the build result.
+The build result will contain an analysis of the build, in addition to the output itself. The build output is located in `result.output`.
+
+`modulr` can also accepts a [CommonJS package][6] or its `package.json` file as argument. In which case it uses the JSON file's `main` value as entry point, the package's dir as root, and picks the rest of its options from the JSON file's `modulr` namespace.
 
 ```javascript
 require('modulr').buildFromPackage('path/to/package', callback);
