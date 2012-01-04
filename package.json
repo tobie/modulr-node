@@ -5,7 +5,7 @@
   "version": "0.7.0",
   "dependencies": {
     "module-grapher": "0.10.x",
-    "uglify-js": "~1.0.7"
+    "uglify-js": ">=1.0.7"
   },
   "author": "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)",
   "maintainers": [
