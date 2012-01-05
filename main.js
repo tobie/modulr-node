@@ -40,6 +40,9 @@ exports.buildFromPackage = function(p, configCallback, callback) {
       }
       jsonFs.readFile(packageFile, function(err, json) {
         if (err) {
+          err.file = packageFile;
+          err.longDesc = err.toString() + '. Malformed JSON in descriptor file:\n    ' + packageFile;
+          err.toString = function() { return err.longDesc; };
           callback(err);
         } else {
           var config = json.modulr || {};
