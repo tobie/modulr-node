@@ -4,11 +4,23 @@ var fs = require('fs'),
     builder = require('./lib/builder'),
     moduleGrapher = require('module-grapher');
 
+function checkConfig(config) {
+  if (config.minify && config.cache) {
+    return 'Cannot minify code when using cache.';
+  }
+  return '';
+}
+
 exports.build = build;
 function build(main, config, callback) {
   if (!callback) {
     callback = config;
     config = {};
+  }
+  var configErr = checkConfig(config);
+  if (configErr) {
+    callback(configErr);
+    return;
   }
   moduleGrapher.graph(main, config, function(err, result) {
     if (err) {
