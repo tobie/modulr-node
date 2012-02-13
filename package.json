@@ -4,7 +4,7 @@
   "main": "./main",
   "version": "0.8.3",
   "dependencies": {
-    "module-grapher": ">=0.10.2",
+    "module-grapher": ">=0.10.3",
     "uglify-js": ">=1.0.7"
   },
   "author": "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)",
@@ -13,7 +13,8 @@
   ],
   "contributors": [
     "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)",
-    "Chris Tice <chris.tice@gmail.com>"
+    "Chris Tice <chris.tice@gmail.com>",
+    "Andrew Chien <achien@fb.com>"
   ],
   "repository": {
     "type": "git",
