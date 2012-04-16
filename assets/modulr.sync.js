@@ -1,19 +1,35 @@
 // modulr.sync.js (c) 2010 Tobie Langel
 (function(exports) {
-  var _factories = {},
+  var modulr = {},
+      _factories = {},
       _modules = {},
       PREFIX = '__module__', // Poor man's hasOwnProperty
       RELATIVE_IDENTIFIER_PATTERN = /^\.\.?\//;
-      
+
+  if (__PERF__) {
+    var _perf = modulr.perf = {
+      start: Date.now(),
+      modules: {}
+    };
+  }
+
   function makeRequire(id, main) {
     // Find the requirer's dirname from it's id.
     var path = id.substring(0, id.lastIndexOf('/') + 1);
-    
+
     function require(identifier) {
+      if (__PERF__) { var t0 = Date.now(); }
       var id = resolveIdentifier(identifier, path),
           key = PREFIX + id,
           mod = _modules[key];
 
+      if (__PERF__) {
+        var _p = _perf.modules[id] = _perf.modules[id] || {
+          count: 0,
+          start: t0
+        };
+        _p.count++;
+      }
       // Check if this module's factory has already been called.
       if (!mod) {
 
@@ -24,7 +40,9 @@
 
         // lazy eval
         if (typeof fn === 'string') {
+          if (__PERF__) { _p.evalStart = Date.now(); }
           fn = new Function('require', 'exports', 'module', fn);
+          if (__PERF__) { _p.evalEnd = Date.now(); }
         }
 
         _modules[key] = mod = { id: id, exports: {} };
@@ -35,6 +53,7 @@
         // entry point.
         var r = makeRequire(id, main || mod);
         fn(r, mod.exports, mod);
+        if (__PERF__) { _p.end = Date.now(); }
       }
       return mod.exports;
     }
@@ -79,4 +98,7 @@
   
   exports.define = define;
   exports.require = makeRequire('');
+  exports.modulr = modulr;
 })(this);
+
+if (__PERF__) { modulr.perf.defineStart = Date.now(); }
