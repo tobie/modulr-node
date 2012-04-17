@@ -16,6 +16,11 @@ function build(main, config, callback) {
     callback(err);
     return;
   }
+  if (config.resolveIdentifiers && config.cache) {
+    var err = new Error('Cannot resolve identifiers when using cache.');
+    callback(err);
+    return;
+  }
   moduleGrapher.graph(main, config, function(err, result) {
     if (err) {
       callback(err);
