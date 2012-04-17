@@ -14,7 +14,8 @@
   "contributors": [
     "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)",
     "Chris Tice <chris.tice@gmail.com>",
-    "Andrew Chien <achien@fb.com>"
+    "Andrew Chien <achien@fb.com>",
+    "Vladimir Kolesnikov <voloko@gmail.com>"
   ],
   "repository": {
     "type": "git",
