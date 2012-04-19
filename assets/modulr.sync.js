@@ -97,7 +97,7 @@
   }
   
   function define(id, factory) {
-    _perf.modules[id] = { count: 0 };
+    if (__PERF__) { _perf.modules[id] = { count: 0 }; }
     _factories[PREFIX + id] = factory;
   }
   
