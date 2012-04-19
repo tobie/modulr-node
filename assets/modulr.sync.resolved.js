@@ -9,7 +9,8 @@
     var _perf = modulr.perf = {
       start: Date.now(),
       modules: {}
-    };
+    },
+    _pos = 1;
   }
 
   function require(id) {
@@ -17,14 +18,16 @@
         mod = _modules[key];
 
     if (__PERF__) {
-      var _p = _perf.modules[id] = _perf.modules[id] || {
-        count: 0,
-        start: Date.now()
-      };
+      var _p = _perf.modules[id];
       _p.count++;
     }
 
     if (mod) { return mod.exports; }
+
+    if (__PERF__) {
+      _p.left = _pos++;
+      _p.start = Date.now();
+    }
 
     var fn = _factories[key];
     delete _factories[key];
@@ -43,11 +46,15 @@
     // entry point.
     if (!require.main) { require.main = mod; }
     fn(require, mod.exports, mod);
-    if (__PERF__) { _p.end = Date.now(); }
+    if (__PERF__) {
+      _p.right = _pos++;
+      _p.end = Date.now();
+    }
     return mod.exports;
   }
 
   function define(id, factory) {
+    _perf.modules[id] = { count: 0 };
     _factories[PREFIX + id] = factory;
   }
 

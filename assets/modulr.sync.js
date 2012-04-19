@@ -10,7 +10,8 @@
     var _perf = modulr.perf = {
       start: Date.now(),
       modules: {}
-    };
+    },
+    _pos = 1;
   }
 
   function makeRequire(id, main) {
@@ -24,15 +25,15 @@
           mod = _modules[key];
 
       if (__PERF__) {
-        var _p = _perf.modules[id] = _perf.modules[id] || {
-          count: 0,
-          start: t0
-        };
+        var _p = _perf.modules[id];
         _p.count++;
       }
       // Check if this module's factory has already been called.
       if (!mod) {
-
+        if (__PERF__) {
+          _p.left = _pos++;
+          _p.start = t0;
+        }
         var fn = _factories[key];
         delete _factories[key]; // no longer needed.
 
@@ -53,7 +54,10 @@
         // entry point.
         var r = makeRequire(id, main || mod);
         fn(r, mod.exports, mod);
-        if (__PERF__) { _p.end = Date.now(); }
+        if (__PERF__) {
+          _p.right = _pos++;
+          _p.end = Date.now();
+        }
       }
       return mod.exports;
     }
@@ -93,6 +97,7 @@
   }
   
   function define(id, factory) {
+    _perf.modules[id] = { count: 0 };
     _factories[PREFIX + id] = factory;
   }
   
