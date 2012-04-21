@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>modulr by tobie</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>modulr</h1>
+        <p>Resolves and concatenates CommonJS module dependencies for use in the browser.</p>
+        <p class="view"><a href="https://github.com/tobie/modulr-node">View the Project on GitHub <small>tobie/modulr-node</small></a></p>
+        <ul>
+          <li><a href="https://github.com/tobie/modulr-node/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/tobie/modulr-node/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/tobie/modulr-node">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>modulr</h1>
+
+<p>Resolves and concatenates <a href="http://wiki.commonjs.org/wiki/Modules/1.1">CommonJS module</a> dependencies for use in the browser. It's a port of <a href="https://github.com/tobie/modulr"><code>modulr</code></a> from Ruby to <a href="http://nodejs.org">node.js</a> and is based on <a href="https://github.com/tobie/module-grapher"><code>module-grapher</code></a>, a node module which resolves dependencies through recursive static analysis.</p>
+
+<h2>Install</h2>
+
+<p><code>modulr</code> is available as an NPM module.</p>
+
+<pre><code>$ npm install modulr
+</code></pre>
+
+<h2>Usage</h2>
+
+<p><code>modulr</code> accepts the main module's identifier and an optional config object as arguments which get passed to <code>module-grapher</code>. It returns a result object whose <code>output</code> property is a string containing <a href="https://github.com/tobie/modulr-node/blob/master/assets/modulr.sync.js">a small runtime</a> and the concatenated modules sources. Optionally, this output can be minified and the module identifiers resolved server-side.</p>
+
+<div class="highlight">
+<pre><span class="nx">require</span><span class="p">(</span><span class="s1">'modulr'</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">paths</span><span class="o">:</span> <span class="p">[</span><span class="s1">'./lib'</span><span class="p">,</span> <span class="s1">'./vendor'</span><span class="p">],</span> <span class="c1">// defaults to ['.']</span>
+  <span class="nx">root</span><span class="o">:</span> <span class="s1">'path/to/package/root/'</span> <span class="c1">// defaults to process.cwd()</span>
+  <span class="nx">minify</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>                 <span class="c1">// defaults to false</span>
+  <span class="nx">resolveIdentifiers</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>     <span class="c1">// defaults to false</span>
+  <span class="nx">environment</span><span class="o">:</span> <span class="s1">'prod'</span> <span class="c1">// or 'dev', defaults to undefined</span>
+<span class="p">},</span> <span class="nx">callback</span><span class="p">);</span>
+
+<span class="c1">// Dump the output to `main.js`.</span>
+<span class="kd">function</span> <span class="nx">callback</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span> <span class="p">}</span>
+  <span class="nx">require</span><span class="p">(</span><span class="s1">'fs'</span><span class="p">).</span><span class="nx">writeFileSync</span><span class="p">(</span><span class="s1">'/path/to/main.js'</span><span class="p">,</span> <span class="nx">result</span><span class="p">.</span><span class="nx">output</span><span class="p">,</span> <span class="s1">'utf8'</span><span class="p">);</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<p><code>modulr</code> can also accepts a <a href="http://wiki.commonjs.org/wiki/Packages/1.1">CommonJS package</a> or its <code>package.json</code> file as argument. In which case it uses the JSON file's <code>main</code> value as entry point, the package's dir as root, and picks the rest of its options from the JSON file's <code>modulr</code> namespace.</p>
+
+<div class="highlight">
+<pre><span class="nx">require</span><span class="p">(</span><span class="s1">'modulr'</span><span class="p">).</span><span class="nx">buildFromPackage</span><span class="p">(</span><span class="s1">'path/to/package'</span><span class="p">,</span> <span class="nx">callback</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<h2>License</h2>
+
+<p>Your choice of <a href="https://raw.github.com/tobie/modulr-node/master/LICENSE">MIT or Apache, Version 2.0 licenses</a>. <code>modulr</code> is copyright 2010 <a href="http://tobielangel.com">Tobie Langel</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/tobie">tobie</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
