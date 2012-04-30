@@ -37,7 +37,8 @@ function callback (err, result) {
 require('modulr').buildFromPackage('path/to/package', callback);
 ```
 
-### Development Environments
+Development Environments
+------------------------
 
 `modulr` provides a development environment. It is enabled by setting the config option `environment` to `"dev"`:
 
@@ -53,15 +54,17 @@ if (__DEV__) { console.log('Module Foo loaded.'); }
 
 2. It adds [`sourceURL` comments](http://blog.getfirebug.com/2009/08/11/give-your-eval-a-name-with-sourceurl/) to each modules. Rendering engines that support these (at least Gecko and WebKit) will give original file names and line numbers to thrown errors even though all modules are packaged in a single file.
 
-### Minification
+Minification
+------------
 
 `modulr` uses [Uglify](https://github.com/mishoo/UglifyJS/) to optionally minify the output. To enable minification, set the `minify` config option to `true`. Note that minification is not compatible with the `"dev"` environment.
 
 ```javascript
-require('modulr').build('foo', { minify: 'true' }, callback);
+require('modulr').build('foo', { minify: true }, callback);
 ```
 
-### Lazy evaluation
+Lazy evaluation
+---------------
 
 [Lazy evaluation](http://calendar.perfplanet.com/2011/lazy-evaluation-of-commonjs-modules/) is a technique which allows delaying parsing and evaluation of modules until they are needed (for example, following a user action) while keeping a synchronous programming model.
 
@@ -83,7 +86,8 @@ or in the `package.json` file:
 }
 ```
 
-### Resolving identifiers at build time
+Resolving identifiers at build time
+-----------------------------------
 
 CommonJS module identifiers can be absolute or relative. Relative identifiers are simplify development but have an extra runtime cost: the path to the module's identifier has to be calculated every time the module is required, and a context aware require function has to be created for every module.
 
@@ -93,7 +97,8 @@ In order to avoid that extra cost, `modulr` is able to resolve identifiers at bu
 require('modulr').build('foo', { resolveIdentifiers: true }, callback);
 ```
 
-### Instrumenting Performance
+Instrumenting Performance
+-------------------------
 
 As applications become increasingly complex, startup time tends to suffer. While `modulr` helps mitigate this through optimizations such as resolving identifiers at build time or lazy evaluation, it's sometimes useful to be able to do some serious auditing and find out which modules slow down startup time.
 
