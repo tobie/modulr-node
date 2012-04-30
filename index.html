@@ -65,6 +65,127 @@
 </pre>
 </div>
 
+<h3>Development Environments</h3>
+
+<p><code>modulr</code> provides a development environment. It is enabled by setting the config option <code>environment</code> to <code>"dev"</code>:</p>
+
+<div class="highlight">
+<pre><span class="nx">require</span><span class="p">(</span><span class="s1">'modulr'</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="p">{</span> <span class="nx">environment</span><span class="o">:</span> <span class="s1">'dev'</span> <span class="p">},</span> <span class="nx">callback</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<p>This does essentially two things.</p>
+
+<ol>
+<li>
+<p>It sets the global variable <code>__DEV__</code> to <code>true</code>. This allows adding development-only code (e.g. logging) that is completely stripped out of production builds, e.g.:</p>
+
+<div class="highlight">
+<pre><span class="k">if</span> <span class="p">(</span><span class="nx">__DEV__</span><span class="p">)</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Module Foo loaded.'</span><span class="p">);</span> <span class="p">}</span>
+</pre>
+</div>
+</li>
+<li><p>It adds <a href="http://blog.getfirebug.com/2009/08/11/give-your-eval-a-name-with-sourceurl/"><code>sourceURL</code> comments</a> to each modules. Rendering engines that support these (at least Gecko and WebKit) will give original file names and line numbers to thrown errors even though all modules are packaged in a single file.</p></li>
+</ol><h3>Minification</h3>
+
+<p><code>modulr</code> uses <a href="https://github.com/mishoo/UglifyJS/">Uglify</a> to optionally minify the output. To enable minification, set the <code>minify</code> config option to <code>true</code>. Note that minification is not compatible with the <code>"dev"</code> environment.</p>
+
+<div class="highlight">
+<pre><span class="nx">require</span><span class="p">(</span><span class="s1">'modulr'</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="p">{</span> <span class="nx">minify</span><span class="o">:</span> <span class="s1">'true'</span> <span class="p">},</span> <span class="nx">callback</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<h3>Lazy evaluation</h3>
+
+<p><a href="http://calendar.perfplanet.com/2011/lazy-evaluation-of-commonjs-modules/">Lazy evaluation</a> is a technique which allows delaying parsing and evaluation of modules until they are needed (for example, following a user action) while keeping a synchronous programming model.</p>
+
+<p>To lazy eval modules, pass a list of absolute module IDs in the configuration object.</p>
+
+<div class="highlight">
+<pre><span class="nx">require</span><span class="p">(</span><span class="s1">'modulr'</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">lazyEval</span><span class="o">:</span> <span class="p">[</span><span class="s1">'path/to/module/bar'</span><span class="p">,</span> <span class="s1">'path/to/baz'</span><span class="p">]</span>
+<span class="p">},</span> <span class="nx">callback</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<p>or in the <code>package.json</code> file:</p>
+
+<div class="highlight">
+<pre><span class="p">{</span>
+  <span class="s2">"modulr"</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">"lazyEval"</span><span class="o">:</span> <span class="p">[</span><span class="s2">"path/to/bar"</span><span class="p">,</span> <span class="s2">"path/to/baz"</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<h3>Resolving identifiers at build time</h3>
+
+<p>CommonJS module identifiers can be absolute or relative. Relative identifiers are simplify development but have an extra runtime cost: the path to the module's identifier has to be calculated every time the module is required, and a context aware require function has to be created for every module.</p>
+
+<p>In order to avoid that extra cost, <code>modulr</code> is able to resolve identifiers at build time which produces modified builds which only contain absolute identifiers and uses a <a href="https://github.com/tobie/modulr-node/blob/master/assets/modulr.sync.resolved.js">lighter runtime</a>. To enable this option, set the <code>resolveIdentifiers</code> config option to <code>true</code>:</p>
+
+<div class="highlight">
+<pre><span class="nx">require</span><span class="p">(</span><span class="s1">'modulr'</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="p">{</span> <span class="nx">resolveIdentifiers</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span> <span class="nx">callback</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<h3>Instrumenting Performance</h3>
+
+<p>As applications become increasingly complex, startup time tends to suffer. While <code>modulr</code> helps mitigate this through optimizations such as resolving identifiers at build time or lazy evaluation, it's sometimes useful to be able to do some serious auditing and find out which modules slow down startup time.</p>
+
+<p>That's what <code>modulr</code>'s instrumentPerformance config option enables. Turn it on like so:</p>
+
+<div class="highlight">
+<pre><span class="nx">require</span><span class="p">(</span><span class="s1">'modulr'</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="p">{</span> <span class="nx">instrumentPerformance</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span> <span class="nx">callback</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<p>This adds a slew of data to the <code>modulr.perf</code> object available in the global scope (for example, through the console). This data is of the form:</p>
+
+<div class="highlight">
+<pre><span class="p">{</span>
+  <span class="s2">"start"</span><span class="o">:</span> <span class="mi">1334878573462</span><span class="p">,</span>            <span class="c1">// All times are in ms.</span>
+  <span class="s2">"defineStart"</span><span class="o">:</span> <span class="mi">1334878573462</span><span class="p">,</span>      <span class="c1">//</span>
+  <span class="s2">"defineEnd"</span><span class="o">:</span> <span class="mi">1334878573464</span><span class="p">,</span>        <span class="c1">//</span>
+  <span class="s2">"requireMainStart"</span><span class="o">:</span> <span class="mi">1334878573464</span><span class="p">,</span> <span class="c1">//</span>
+  <span class="s2">"modules"</span><span class="o">:</span> <span class="p">{</span>                       <span class="c1">// Object containing all defined modules.</span>
+    <span class="s2">"foo"</span><span class="o">:</span> <span class="p">{</span>                         <span class="c1">//</span>
+      <span class="s2">"count"</span><span class="o">:</span> <span class="mi">0</span>                     <span class="c1">// Module "foo" has not been required yet.</span>
+    <span class="p">},</span>                               <span class="c1">//</span>
+                                     <span class="c1">//</span>
+    <span class="s2">"main"</span><span class="o">:</span> <span class="p">{</span>                        <span class="c1">// Module "main" has been required once.</span>
+      <span class="s2">"count"</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>                    <span class="c1">// Evaluation of that module and it's</span>
+      <span class="s2">"left"</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>                     <span class="c1">// dependencies took 16 ms.</span>
+      <span class="s2">"start"</span><span class="o">:</span> <span class="mi">1334878573464</span><span class="p">,</span>        <span class="c1">// Notice the use of nested sets to</span>
+      <span class="s2">"right"</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>                    <span class="c1">// store initialization order.</span>
+      <span class="s2">"end"</span><span class="o">:</span> <span class="mi">1334878573480</span>           <span class="c1">//</span>
+    <span class="p">},</span>                               <span class="c1">//</span>
+                                     <span class="c1">//</span>
+    <span class="s2">"bar"</span><span class="o">:</span> <span class="p">{</span>                         <span class="c1">// Module "bar" has been required twice.</span>
+      <span class="s2">"count"</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>                    <span class="c1">// It was lazy evaluated.</span>
+      <span class="s2">"left"</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>                     <span class="c1">//</span>
+      <span class="s2">"start"</span><span class="o">:</span> <span class="mi">1334878573466</span><span class="p">,</span>        <span class="c1">//</span>
+      <span class="s2">"evalStart"</span><span class="o">:</span> <span class="mi">1334878573466</span><span class="p">,</span>    <span class="c1">// Lazy evaluation took 12 ms.</span>
+      <span class="s2">"evalEnd"</span><span class="o">:</span> <span class="mi">1334878573478</span><span class="p">,</span>      <span class="c1">//</span>
+      <span class="s2">"right"</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>                    <span class="c1">//</span>
+      <span class="s2">"end"</span><span class="o">:</span> <span class="mi">1334878573480</span>           <span class="c1">//</span>
+    <span class="p">}</span>                                <span class="c1">//</span>
+  <span class="p">},</span>                                 <span class="c1">//</span>
+  <span class="s2">"requireMainEnd"</span><span class="o">:</span> <span class="mi">1334878573480</span><span class="p">,</span>   <span class="c1">//</span>
+  <span class="s2">"end"</span><span class="o">:</span> <span class="mi">1334878573480</span>               <span class="c1">//</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<p>To visualize this data, just copy and paste it (or in modern browsers, simply drag and drop the JSON file) onto <a href="http://tobie.github.com/modulr-node/perf.html">this page</a>. You'll get a beautiful waterfall chart of your application's initialization stage thanks to a little bit of <a href="http://mbostock.github.com/d3/">d3.js</a> magic.</p>
 
 <h2>License</h2>
 
