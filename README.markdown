@@ -63,7 +63,7 @@ require('modulr').build('foo', { minify: 'true' }, callback);
 
 ### Lazy evaluation
 
-[lazy evaluation](http://calendar.perfplanet.com/2011/lazy-evaluation-of-commonjs-modules/) is a technique which allows delaying parsing and evaluation of modules until they are needed (for example, following a user action) while keeping a synchronous programming model.
+[Lazy evaluation](http://calendar.perfplanet.com/2011/lazy-evaluation-of-commonjs-modules/) is a technique which allows delaying parsing and evaluation of modules until they are needed (for example, following a user action) while keeping a synchronous programming model.
 
 To lazy eval modules, pass a list of absolute module IDs in the configuration object.
 
@@ -75,7 +75,7 @@ require('modulr').build('foo', {
 
 or in the `package.json` file:
 
-```json
+```javascript
 {
   "modulr": {
     "lazyEval": ["path/to/bar", "path/to/baz"]
