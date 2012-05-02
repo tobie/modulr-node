@@ -45,7 +45,7 @@
     // require.main isn't defined until we actually require the program's
     // entry point.
     if (!require.main) { require.main = mod; }
-    fn(require, mod.exports, mod);
+    fn.call(exports, require, mod.exports, mod);
     if (__PERF__) {
       _p.right = _pos++;
       _p.end = Date.now();
