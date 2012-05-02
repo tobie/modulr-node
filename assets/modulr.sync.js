@@ -53,7 +53,7 @@
         // `main` isn't defined until we actually require the program's
         // entry point.
         var r = makeRequire(id, main || mod);
-        fn(r, mod.exports, mod);
+        fn.call(exports, r, mod.exports, mod);
         if (__PERF__) {
           _p.right = _pos++;
           _p.end = Date.now();
