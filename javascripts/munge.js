@@ -33,7 +33,7 @@
     });
     
     var t0 = modules[1].start,
-        output = []
+        output = [];
 
     getRoots(modules).forEach(function(root) {
       var arr = getChildren(root, modules);

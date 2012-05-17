@@ -101,7 +101,14 @@ function chart() {
           tip.offset(function(d, i) {
             return [scaleX(min(d)), (i * height) + (height / 2)]
           }).padding(8).orient('right').text(function(d) {
-            return d.node.id + ' | Self: '  + formatTime(addTime(d)) + ' | Total: ' + formatTime(delta(d));
+            var n = d.node; output = [];
+            output.push(n.id);
+            output.push('Self: '  + formatTime(addTime(d)));
+            if (n.evalStart) {
+              output.push('Eval: '  + formatTime(n.evalEnd - n.evalStart));
+            }
+            output.push('Total: '  + formatTime(delta(d)));
+            return output.join(' | ');
           }).attr('class', 'd3-tip');
         })
         .on('mouseout',  function() {
@@ -114,24 +121,34 @@ function chart() {
       .attr("width", max_width)
       .attr("height", inner_height)
       .attr("class", "bckgrnd");
-   
+
     rows.append("rect")
       .attr("y", 0)
       .attr("x", function(d, i) { return scaleX(min(d)); })
       .attr("width", function(d) { return scaleX(delta(d)); })
       .attr("height", inner_height)
       .attr("class", "total");
-   
+
     rows.selectAll("rect.actual")
-      .data(function(d) { return d })
+      .data(function(d) { return d; })
       .enter().append("rect")
       .attr("y", 0)
       .attr("x", function(d, i) { return scaleX(d[0]); })
       .attr("width", function(d) { return scaleX(d[1] - d[0]); })
       .attr("height", inner_height)
       .attr("class", "actual");
+
+    rows.append("rect")
+      .attr("y", 0)
+      .attr("x", function(d, i) { return scaleX(min(d)); })
+      .attr("width", function(d) {
+        var n = d.node;
+        return n.evalStart ? scaleX(n.evalEnd - n.evalStart) : 0;
+      })
+      .attr("height", inner_height)
+      .attr("class", "eval");
   }
-  
+
   _chart.remove = function() {
     if (rootNode) { rootNode.remove(); }
     return _chart;
