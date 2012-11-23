@@ -21,6 +21,7 @@ require('modulr').build('foo', {
   root: 'path/to/package/root/' // defaults to process.cwd()
   minify: true,                 // defaults to false
   resolveIdentifiers: true,     // defaults to false
+  minifyIdentifiers: false,     // defaults to false
   environment: 'prod' // or 'dev', defaults to undefined
 }, callback);
 
@@ -57,7 +58,7 @@ if (__DEV__) { console.log('Module Foo loaded.'); }
 Minification
 ------------
 
-`modulr` uses [Uglify](https://github.com/mishoo/UglifyJS/) to optionally minify the output. To enable minification, set the `minify` config option to `true`. Note that minification is not compatible with the `"dev"` environment.
+`modulr` uses [Uglify](https://github.com/mishoo/UglifyJS/) to optionally minify the output. To enable minification, set the `minify` config option to `true`. To also minify module identifiers, set the `minifyIdentifiers` option to `true`. Note that minification is not compatible with the `"dev"` environment.
 
 ```javascript
 require('modulr').build('foo', { minify: true }, callback);
