@@ -11,7 +11,7 @@ function build(main, config, callback) {
     callback = config;
     config = {};
   }
-  if (config.minify && config.cache) {
+  if ((config.minify || config.minifyIdentifiers) && config.cache) {
     var err = new Error('Cannot minify code when using cache.');
     callback(err);
     return;
