@@ -103,11 +103,11 @@ function chart() {
           }).padding(8).orient('right').text(function(d) {
             var n = d.node; output = [];
             output.push(n.id);
-            output.push('Self: '  + formatTime(addTime(d)));
+            output.push('Self: ' + formatTime(addTime(d)));
             if (n.evalStart) {
-              output.push('Eval: '  + formatTime(n.evalEnd - n.evalStart));
+              output.push('Eval: ' + formatTime(n.evalEnd - n.evalStart));
             }
-            output.push('Total: '  + formatTime(delta(d)));
+            output.push('Total: ' + formatTime(delta(d)));
             return output.join(' | ');
           }).attr('class', 'd3-tip');
         })
