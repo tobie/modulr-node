@@ -19,18 +19,22 @@ function audit(raw) {
   });
   
   var html = '',
-      unrequired = modules.filter(not(wasRequired)).map(getId).sort();
+      requiredCount = modules.filter(wasRequired).length,
+      unrequired = modules.filter(not(wasRequired)).map(getId).sort(),
       evaled = modules.filter(wasEvaled).map(getId).sort();
-  
+
+  html += "<p>" + requiredCount + " modules were required during initialization.</p>";
+  html += "<p>Total initialization time was " + (raw.end - raw.start) + " ms.</p>";
+
   if (unrequired.length) {
     html += "<p>" + unrequired.length + " modules were not required during initialization and should probably be lazy evaluated:</p>";
     html += "<ul>" + unrequired.map(makeWrapper('li')).join('') + "</ul>";
   }
+  
   if (evaled.length) {
     html += "<p>" + evaled.length + " modules were lazy evaluated, but were required during initialization. They probably should not be lazy evaluated:</p>";
     html += "<ul>" + evaled.map(makeWrapper('li')).join('') + "</ul>";
   }
 
-  html += "<hr />";
   return html;
 }

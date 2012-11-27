@@ -9,6 +9,7 @@
 <script src="./javascripts/munge.js" type="text/javascript" charset="utf-8"></script>
 <script src="./javascripts/chart.js" type="text/javascript" charset="utf-8"></script>
 <script src="./javascripts/audit.js" type="text/javascript" charset="utf-8"></script>
+<script src="./javascripts/sample-data.js" type="text/javascript" charset="utf-8"></script>
 
 <style type="text/css" media="screen">
    .chart g.selected rect.bckgrnd {
@@ -81,46 +82,66 @@
 	</style>
 </head>
 <body>
+  <p><textarea id="input_zone" rows="8" placeholder="JSON goes here"></textarea></p>
+  <p>Insert a stringified <code>modulr.perf</code> object right above and <a href="#" onclick="run(document.getElementById('input_zone').value); return false">chart away</a>… or <a href="#" onclick="document.getElementById('input_zone').value = JSON.stringify(sample_data); run(sample_data); return false">give it a spin with sample data</a>.</p>
+  <p>If your browser supports it, you can also just drag and drop a JSON file anywhere on the page.</p>
+  <p><input type=button value="Chart!" onclick="run(document.getElementById('input_zone').value); return false"> <span id="error_msg" style="color: red; display: none">Oops, I failed to parse the JSON data you provided. Can you please make sure it's well formatted?</span></p>
   <div id="container">
     
   </div>
   <div id="audit">
     
   </div>
-  <p><textarea id="input_zone" rows="8" placeholder="JSON goes here"></textarea></p>
-  <p>Insert a stringified <code>modulr.perf</code> object right above and chart away!</p>
-  <p>If your browser supports it, you can also just drag and drop a JSON file anywhere on the page.</p>
-  <p><input type=button value="Chart!" onclick="run(document.getElementById('input_zone').value); return false"> <span id="error_msg" style="color: red; display: none">Oops, I failed to parse the JSON data you provided. Can you please make sure it's well formatted?</span></p>
 <script type="text/javascript" charset="utf-8">
 
 var  currentChart = chart();
 function run(raw) {
-  var element = document.getElementById('error_msg');
-  element.style.display = 'none';
+  hideErrorMessage();
+  hideCurrentChart();
+  var obj;
+  if (typeof raw == 'string') {
+    obj = parseRawData(raw);
+  } else {
+    obj = raw;
+  }
+  
+  if (!obj) {
+    displayErrorMessage();
+    return;
+  }
+  
+  if (!obj.modules) {
+    obj = obj.perf;
+  }
+  
+  var data = mungeData(obj);
+  currentChart(data);
+  document.getElementById('audit').innerHTML = audit(obj);
+}
 
-  raw = raw.replace(/^\s*['"]/, '').replace(/['"]\s*$/, '');
-  try {
-    raw = JSON.parse(raw);
-  } catch(e) {
-    element.style.display = '';
-    return;
-  }
-  
-  if (!raw) {
-    element.style.display = '';
-    return;
-  }
-  
-  if (!raw.modules) {
-    raw = raw.perf;
-  }
-  
-  var data = mungeData(raw);
+function hideErrorMessage() {
+  document.getElementById('error_msg').style.display = 'none';
+}
+
+function displayErrorMessage() {
+  document.getElementById('error_msg').style.display = '';
+}
+
+function hideCurrentChart() {
   if (currentChart) {
     currentChart.remove();
   }
-  currentChart(data);
-  document.getElementById('audit').innerHTML = audit(raw);
+}
+
+function parseRawData(raw) {
+  var obj;
+
+  raw = raw.replace(/^\s*['"]/, '').replace(/['"]\s*$/, '');
+  try {
+    return JSON.parse(raw);
+  } catch(e) {
+    displayErrorMessage();
+  }
 }
 
 if (document.addEventListener) {
@@ -140,6 +161,35 @@ if (document.addEventListener) {
       reader.readAsText(f);
     }
   }, false);
+}
+
+if (location.hash == "#sample") {
+  document.getElementById('input_zone').value = JSON.stringify(sample_data);
+  run(sample_data);
+} else if (location.hash) {
+  getGist(location.hash.substring(1));
+}
+
+function getGist(hash) {
+  // sanitize input
+  if (/^[a-zA-Z0-9]+$/.test(hash)) {
+    var resource = document.createElement('script');
+    resource.src = "https://api.github.com/gists/" + hash + "?callback=handleGist";
+    var script = document.getElementsByTagName('script')[0];
+    script.parentNode.insertBefore(resource, script);
+  }
+}
+
+function handleGist(json) {
+  var files = json.data.files;
+  for (var name in files) {
+    var content = files[name].content;
+    if (content) {
+      document.getElementById('input_zone').value = content;
+      run(content);
+      break;
+    }
+  }
 }
 
 </script>
