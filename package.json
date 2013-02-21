@@ -4,7 +4,7 @@
   "main": "./main",
   "version": "0.13.0",
   "dependencies": {
-    "module-grapher": ">=0.10.4",
+    "module-grapher": ">=0.11.0",
     "uglify-js": "1.x"
   },
   "author": "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)",
